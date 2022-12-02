@@ -8,50 +8,51 @@ import (
 	"strings"
 )
 
-func getPointsForMyHandSign(handSign string) int {
+func getPointsForMyHandSign(yourSign string, outcome string) int {
 
-	switch handSign {
-	case "X":
-		return 1
-	case "Y":
-		return 2
-	default:
-		return 3
+	switch outcome {
+	case "X": // we have to lose here
+		switch yourSign {
+		case "A": // I have to give C
+			return 3
+		case "B": // I have to give A
+			return 1
+		default: // I have to give B
+			return 2
+		}
+	case "Y": // we have to draw here
+		switch yourSign {
+		case "A": // I have to give A
+			return 1
+		case "B": // I have to give B
+			return 2
+		default: // I have to give C
+			return 3
+		}
+	default: // we have to win here
+		switch yourSign {
+		case "A": // I have to give B
+			return 2
+		case "B": // I have to give C
+			return 3
+		default: // I have to give A
+			return 1
+		}
 	}
 
 }
 
-func getPointsForBattle(yourSign string, mySign string) int {
+func getPointsForBattle(outcome string) int {
 
-	switch mySign {
+	switch outcome {
 	case "X":
-		switch yourSign {
-		case "A":
-			return 3
-		case "B":
-			return 0
-		default:
-			return 6
-		}
+		return 0
 	case "Y":
-		switch yourSign {
-		case "A":
-			return 6
-		case "B":
-			return 3
-		default:
-			return 0
-		}
+		return 3
 	default:
-		switch yourSign {
-		case "A":
-			return 0
-		case "B":
-			return 6
-		default:
-			return 3
-		}
+		return 6
 	}
+
 }
 
 func main() {
@@ -75,9 +76,9 @@ func main() {
 	for scanner.Scan() {
 		signs := strings.Split(scanner.Text(), " ")
 		yourSign := signs[0]
-		mySign := signs[1]
+		outcome := signs[1]
 
-		totalPoints += getPointsForMyHandSign(mySign) + getPointsForBattle(yourSign, mySign)
+		totalPoints += getPointsForMyHandSign(yourSign, outcome) + getPointsForBattle(outcome)
 	}
 
 	fmt.Println("totalPoints: ", totalPoints)
