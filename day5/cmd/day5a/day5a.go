@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
-func setupInitialState(stacks [9]pkg.Stack) {
+func setupInitialState(stacks *[9]pkg.Stack) {
 	stacks[0].PushAll([]string{"G", "D", "V", "Z", "J", "S", "B"})
 	stacks[1].PushAll([]string{"Z", "S", "M", "G", "V", "P"})
 	stacks[2].PushAll([]string{"C", "L", "B", "S", "W", "T", "Q", "F"})
@@ -18,6 +20,16 @@ func setupInitialState(stacks [9]pkg.Stack) {
 	stacks[6].PushAll([]string{"H", "G", "T", "R", "J", "D", "S", "Q"})
 	stacks[7].PushAll([]string{"P", "F", "V"})
 	stacks[8].PushAll([]string{"D", "R", "S", "T", "J"})
+}
+
+func parseInput(inputLine string) (int, int, int) {
+	inputs := strings.Split(inputLine, " ")
+
+	numberOfItems, _ := strconv.Atoi(inputs[1])
+	from, _ := strconv.Atoi(inputs[3])
+	to, _ := strconv.Atoi(inputs[5])
+
+	return numberOfItems, from, to
 }
 
 func main() {
@@ -42,6 +54,29 @@ func main() {
 	}
 
 	var stacks [9]pkg.Stack
-	setupInitialState(stacks)
+	setupInitialState(&stacks)
 
+	for scanner.Scan() {
+		lineText := scanner.Text()
+		numberOfItems, from, to := parseInput(lineText)
+
+		for i := 0; i < numberOfItems; i++ {
+			fromStack := &stacks[from-1]
+			receiverStack := &stacks[to-1]
+			element, _ := fromStack.Pop()
+			receiverStack.Push(element)
+		}
+	}
+
+	fmt.Println("")
+	fmt.Println("===========")
+	fmt.Println("After:")
+	fmt.Println("===========")
+	fmt.Println("")
+
+	// Finally print all the array Values
+	for _, stack := range stacks {
+		fmt.Println(strings.Join(stack, "-"))
+		// fmt.Printf("%v", stack)
+	}
 }
