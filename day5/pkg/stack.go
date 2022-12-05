@@ -29,3 +29,15 @@ func (s *Stack) Pop() (string, bool) {
 	*s = (*s)[:topIndex] // Removes the top element from the stack
 	return element, true
 }
+
+// Gives the last x elements in the order they appear in the list
+func (s *Stack) PopMultiple(numberOfElements int) ([]string, bool) {
+	if s.IsEmpty() || len(*s) < numberOfElements || numberOfElements == 0 {
+		return nil, false
+	}
+
+	newFinalIndex := len(*s) - numberOfElements
+	elements := (*s)[newFinalIndex:]
+	*s = (*s)[:newFinalIndex] // Removes the top element from the stack
+	return elements, true
+}
