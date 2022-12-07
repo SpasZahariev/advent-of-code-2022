@@ -1,15 +1,15 @@
 package pkg
 
 type Node struct {
-	key      string
-	value    int
-	parent   *Node
-	children map[string]Node
+	Key      string
+	Value    int
+	Parent   *Node
+	Children map[string]*Node
 }
 
-func (n Node) AddChild(child Node) {
+func (n *Node) AddChild(child *Node) {
 
-	n.children[child.key] = child
+	n.Children[child.Key] = child
 }
 
 // func (n *Node) GetParent() *Node {
