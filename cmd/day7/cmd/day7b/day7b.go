@@ -59,6 +59,19 @@ func computeLessOrEqualTo100K(node *pkg.Node, sizes *[]int) {
 	}
 }
 
+func findClosestThatWorks(node *pkg.Node, neededSpace int, closestFound *int) int {
+
+	if node.Value > neededSpace && node.Value < *closestFound {
+		*closestFound = node.Value
+	}
+
+	for _, v := range node.Children {
+		*closestFound = findClosestThatWorks(v, neededSpace, closestFound)
+	}
+
+	return *closestFound
+}
+
 func main() {
 	file, err := os.Open("../../input.txt")
 
@@ -111,10 +124,15 @@ func main() {
 
 	computeLessOrEqualTo100K(&rootNode, &fileSizes)
 
-	sum := 0
-	for _, v := range fileSizes {
+	availableSpace := 70_000_000 - rootNode.Value
 
-		sum += v
-	}
-	fmt.Println("The sum of FileSizes is:", sum)
+	fmt.Println("We have this much available Right now:", availableSpace)
+
+	neededSpace := 30_000_000 - availableSpace
+	fmt.Println("We have to free up this much: ", neededSpace)
+
+	closestFound := 100_000_000
+	closestFound = findClosestThatWorks(&rootNode, neededSpace, &closestFound)
+
+	fmt.Println("This is our Answer!!! ", closestFound)
 }
