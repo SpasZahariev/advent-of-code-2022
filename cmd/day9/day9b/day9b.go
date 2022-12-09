@@ -14,12 +14,10 @@ type RopeEnd struct {
 	column int
 }
 
-func (o *RopeEnd) move(instruction string) {
-	parts := strings.Split(instruction, " ")
+func (o *RopeEnd) moveSingleStep(direction string) {
 
-	numberOfSteps, _ := strconv.Atoi(parts[1])
-
-	switch parts[0] {
+	numberOfSteps := 1
+	switch direction {
 	case "U":
 		o.row = o.row - numberOfSteps
 	case "D":
@@ -118,25 +116,34 @@ func simulateMovements(headMoves []string) {
 	sandbox[500][500] = true
 
 	for _, instruction := range headMoves {
-		ropeKnots[0].move(instruction)
 
-		// move the tail until they are touching
-		for tailIndex := 1; tailIndex < len(ropeKnots); tailIndex++ {
-			previousKnot := &ropeKnots[tailIndex-1]
-			currentKnot := &ropeKnots[tailIndex]
-			// keep making steps with the 9 tails until they touch the Head
-			for !previousKnot.isTouching(currentKnot) {
-				currentKnot.catchupStep(previousKnot)
+		parts := strings.Split(instruction, " ")
+		remainingMoves, _ := strconv.Atoi(parts[1])
 
-				// only take note of the last Tail in the list
-				if tailIndex == 9 {
-					sandbox[currentKnot.row][currentKnot.column] = true // mark the spot as visited by the tail
+		for remainingMoves > 0 {
+			ropeKnots[0].moveSingleStep(parts[0])
+
+			// move the tail until they are touching
+			for tailIndex := 1; tailIndex < len(ropeKnots); tailIndex++ {
+				previousKnot := &ropeKnots[tailIndex-1]
+				currentKnot := &ropeKnots[tailIndex]
+				// keep making steps with the 9 tails until they touch the Head
+				if !previousKnot.isTouching(currentKnot) {
+					currentKnot.catchupStep(previousKnot)
+
+					// only take note of the last Tail in the list
+					if tailIndex == 9 {
+						sandbox[currentKnot.row][currentKnot.column] = true // mark the spot as visited by the tail
+
+					}
 
 				}
 
 			}
 
+			remainingMoves--
 		}
+
 	}
 
 	// Count the visited places by the tail
