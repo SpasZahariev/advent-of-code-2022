@@ -125,11 +125,11 @@ func simulateMovements(headMoves []string) {
 
 			// move the tail until they are touching
 			for tailIndex := 1; tailIndex < len(ropeKnots); tailIndex++ {
-				previousKnot := &ropeKnots[tailIndex-1]
+				previousKnot := ropeKnots[tailIndex-1]
 				currentKnot := &ropeKnots[tailIndex]
 				// keep making steps with the 9 tails until they touch the Head
-				if !previousKnot.isTouching(currentKnot) {
-					currentKnot.catchupStep(previousKnot)
+				if !currentKnot.isTouching(&previousKnot) {
+					currentKnot.catchupStep(&previousKnot)
 
 					// only take note of the last Tail in the list
 					if tailIndex == 9 {
