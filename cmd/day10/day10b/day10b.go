@@ -17,41 +17,38 @@ func main() {
 
 	var cycle uint8 = 1 // Let's skip the original 0 cycle and start indexing from 1 for cleaner code
 
-	carryOver := 0              // any value that should be applied inside a register Right now!
-	var registerValues [223]int //adding a bit more capacity in case of edge cases
+	var registerValueAtEndOfCycle [241]int //adding a bit more capacity in case of edge cases
 
-	registerValues[0] = 1
-	registerValues[1] = 1 // The register X stars with the initial value of 1
+	registerValueAtEndOfCycle[0] = 1 // The register X stars with the initial value of 1
 
-	for cycle < 221 {
+	for cycle < 241 {
 
 		scanner.Scan()
 		lineParts := strings.Split(scanner.Text(), " ")
 
-		currentX := registerValues[cycle-1] + carryOver
+		currentX := registerValueAtEndOfCycle[cycle-1]
 
 		if len(lineParts) == 1 {
 			// this must be a "noop" command
-			carryOver = 0
-			registerValues[cycle] = currentX
+			registerValueAtEndOfCycle[cycle] = currentX
 			cycle += 1
 		} else {
 			// this is an "addx" command
 			value, _ := strconv.Atoi(lineParts[1])
-			carryOver = value
-			registerValues[cycle] = currentX // we apply the value after 2 cycles are finished
-			registerValues[cycle+1] = currentX
+			registerValueAtEndOfCycle[cycle] = currentX // we apply the value after 2 cycles are finished
+			registerValueAtEndOfCycle[cycle+1] = currentX + value
 			cycle += 2
 		}
 
 	}
 
-	twenty := 20 * registerValues[20]
-	sixty := 60 * registerValues[60]
-	hundred := 100 * registerValues[100]
-	hundredForty := 140 * registerValues[140]
-	hundredEighty := 180 * registerValues[180]
-	twoTwenty := 220 * registerValues[220]
+	// to get the value at the beginnign of a cycle -> decrement by 1
+	twenty := 20 * registerValueAtEndOfCycle[19]
+	sixty := 60 * registerValueAtEndOfCycle[59]
+	hundred := 100 * registerValueAtEndOfCycle[99]
+	hundredForty := 140 * registerValueAtEndOfCycle[139]
+	hundredEighty := 180 * registerValueAtEndOfCycle[179]
+	twoTwenty := 220 * registerValueAtEndOfCycle[219]
 
 	fmt.Println("Strengths:", twenty, sixty, hundred, hundredForty, hundredEighty, twoTwenty)
 	answer := twenty + sixty + hundred + hundredForty + hundredEighty + twoTwenty
