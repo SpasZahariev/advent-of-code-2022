@@ -54,4 +54,41 @@ func main() {
 	answer := twenty + sixty + hundred + hundredForty + hundredEighty + twoTwenty
 
 	fmt.Println("sum of signal strengths ", answer)
+
+	// Part B
+
+	rowCount := 6
+	columnCount := 40
+
+	crtDisplay := make([][]string, rowCount)
+	for i := range crtDisplay {
+		crtDisplay[i] = make([]string, columnCount)
+	}
+
+	for row := 0; row < rowCount; row++ {
+		for column := 0; column < columnCount; column++ {
+			cycleForThisPixel := (row * 40) + column + 1                     // +1 at the end because on CYCLE one we are drawing PIXEL zero (aka on cycle one we draw row0,col0)
+			spritePosition := registerValueAtEndOfCycle[cycleForThisPixel-1] //-1 because we want to know the Value of X in the beginning of this cycle (X shows the position of the middle of the sprite)
+
+			if abs(spritePosition-column) <= 1 {
+				crtDisplay[row][column] = "##"
+			} else {
+				crtDisplay[row][column] = "  "
+			}
+		}
+	}
+
+	fmt.Println()
+	for i := range crtDisplay {
+		currentLine := crtDisplay[i]
+		fmt.Println(strings.Join(currentLine[:], ""))
+	}
+
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
