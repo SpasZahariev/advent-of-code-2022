@@ -46,7 +46,7 @@ func parseItems(scanner *bufio.Scanner) pkg.Queue[int] {
 	for _, v := range textItems {
 		item, _ := strconv.Atoi(v)
 
-		items.Enqueue(item)
+		items.Enqueue(int(item))
 
 	}
 	return items
@@ -83,7 +83,7 @@ func throwItems(current *Monkey, monkeys *[]Monkey) {
 func throwItem(current *Monkey, item int, monkeys *[]Monkey) {
 	newWorry := inspect(current, item)
 
-	if newWorry%current.monkeyDivisor == 0 {
+	if newWorry%int(current.monkeyDivisor) == 0 {
 		(*monkeys)[current.truePath].items.Enqueue(newWorry)
 
 	} else {
@@ -100,12 +100,14 @@ func inspect(monkey *Monkey, item int) int {
 		worry = item
 	} else {
 		constant, _ := strconv.Atoi(monkey.worryFactor)
-		worry = constant
+		worry = int(constant)
 	}
 
 	if monkey.operator == "*" {
-		return (item * worry) / 3
+		// return item * worry
+		return item * worry / 3
 	} else {
+		// return item + worry
 		return (item + worry) / 3
 	}
 }
@@ -130,15 +132,22 @@ func main() {
 
 	}
 
-	for i := 0; i < 20; i++ {
+	for i := 0; i < 10000; i++ {
 		for monkeyIndex := 0; monkeyIndex < len(monkeys); monkeyIndex++ {
 			throwItems(&monkeys[monkeyIndex], &monkeys)
+
+		}
+		if i%1000 == 0 || i == 20 {
+			fmt.Printf("------ %d ------ \n", i)
+			printMonkeyStats(monkeys)
+			fmt.Printf("------------------- \n")
 		}
 	}
-	fmt.Printf("------ 20 ------ \n")
+	fmt.Printf("------ 10000 ------ \n")
 	printMonkeyStats(monkeys)
-	fmt.Printf("------------------- \n")
-	biggest, secondBiggest := 0, 0
+	fmt.Printf("----------------------------- \n")
+
+	biggest, secondBiggest := int(0), int(0)
 	for monkeyIndex := 0; monkeyIndex < len(monkeys); monkeyIndex++ {
 		if monkeys[monkeyIndex].inspectionCount > secondBiggest {
 			secondBiggest = monkeys[monkeyIndex].inspectionCount
