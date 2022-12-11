@@ -1,21 +1,26 @@
 package pkg
 
-type Queue []rune
-
-func (q *Queue) IsEmpty() bool {
-	return len(*q) == 0
+type Queue[T any] struct {
+	contents []T
 }
 
-func (q *Queue) Enqueue(character rune) {
-	*q = append(*q, character)
-}
-
-func (q *Queue) Dequeue() (rune, bool) {
-	if q.IsEmpty() {
-		return '_', false
+func NewQueue[T any]() Queue[T] {
+	return Queue[T]{
+		contents: make([]T, 0, 5),
 	}
-	firstElement := (*q)[0]
+}
 
-	*q = (*q)[1:]
-	return firstElement, true
+func (q *Queue[T]) IsEmpty() bool {
+	return len(q.contents) == 0
+}
+
+func (q *Queue[T]) Enqueue(item T) {
+	q.contents = append(q.contents, item)
+}
+
+func (q *Queue[T]) Dequeue() T {
+	firstElement := q.contents[0]
+
+	q.contents = q.contents[1:]
+	return firstElement
 }
